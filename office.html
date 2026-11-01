@@ -334,6 +334,18 @@
 
         let currentData = null;
         let tick = 0;
+        // --- FEATURE 9: ZERO-LEAK CREDENTIAL GUARD ---
+        function redactCredentials(text) {
+            if (!text) return '';
+            return text.replace(/(ghp_[a-zA-Z0-9]{36}|gsk_[a-zA-Z0-9]{30,}|eyJ[a-zA-Z0-9_-]{20,})/g, '«redacted_token»');
+        }
+
+        // --- FEATURE 6: BATTERY SAVER & TAB VISIBILITY THROTTLING ---
+        let isTabActive = true;
+        document.addEventListener('visibilitychange', () => {
+            isTabActive = !document.hidden;
+        });
+
         const canvas = document.getElementById('office-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -422,7 +434,10 @@
                 ctx.fillText(agent.name, pos.x + 8, pos.y + 92);
             });
 
-            requestAnimationFrame(drawOffice);
+            
+            const delay = isTabActive ? 16 : 100; // Throttle to ~10fps when backgrounded
+            setTimeout(() => requestAnimationFrame(drawOffice), delay);
+    
         }
 
         canvas.addEventListener('click', function(e) {
@@ -628,7 +643,10 @@
             downloadAnchor.remove();
         }
 
-        requestAnimationFrame(drawOffice);
+        
+            const delay = isTabActive ? 16 : 100; // Throttle to ~10fps when backgrounded
+            setTimeout(() => requestAnimationFrame(drawOffice), delay);
+    
         setupWebSocket();
         setInterval(fetchState, 5000);
     </script>
