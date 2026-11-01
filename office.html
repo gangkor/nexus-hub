@@ -281,6 +281,26 @@
         <div class="console-pre" id="console-log">Підключення до WebSocket...</div>
     </div>
 
+    <!-- PWA Install Modal -->
+    <div id="install-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; padding: 16px;" onclick="this.style.display='none'">
+        <div style="background: #111827; border: 2px solid #818cf8; border-radius: 14px; max-width: 440px; width: 100%; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="font-size: 1rem; font-weight: bold; color: #38bdf8;">📥 Встановлення на екран</div>
+                <div style="font-size: 1.4rem; color: #94a3b8; cursor: pointer;" onclick="document.getElementById('install-modal').style.display='none'">×</div>
+            </div>
+            <div style="font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 14px;">
+                <b>Як додати на головний екран:</b><br><br>
+                <b>1. Якщо ти в Chrome (Android):</b><br>
+                Натисни <b>три крапки (⋮)</b> у правому верхньому кутку браузера та вибери <b>«Встановити додаток»</b> (або <i>«Додати на головний екран»</i>).<br><br>
+                <b>2. Якщо ти відкрив посилання всередині Telegram:</b><br>
+                Натисни <b>три крапки (⋮)</b> вгорі справа вікна Telegram та вибери <b>«Відкрити в Chrome»</b>, після чого з'явиться кнопка встановлення.<br><br>
+                <b>3. Якщо ти на iPhone (Safari):</b><br>
+                Натисни кнопку <b>«Поділитися»</b> (квадрат зі стрілкою вгору) внизу екрана та обери <b>«На початковий екран»</b>.
+            </div>
+            <button onclick="document.getElementById('install-modal').style.display='none'" style="width: 100%; background: #4f46e5; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-family: inherit; font-size: 0.85rem; cursor: pointer;">ЗРОЗУМІЛО</button>
+        </div>
+    </div>
+
     <!-- Modal -->
     <div id="modal-backdrop" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -319,13 +339,8 @@
                     deferredPrompt = null;
                 });
             } else {
-                // If browser already supports install or opened in in-app browser
-                alert("Щоб винести додаток на робочий стіл:
-
-1. Натисніть три крапки (⋮) у правому верхньому кутку Chrome (або кнопку 'Поділитися' в Safari).
-2. Оберіть пункт 'Додати на головний екран' (або 'Встановити додаток').
-
-Іконка з'явиться на робочому столі поряд зі звичайними додатками!");
+                // Open step-by-step modal guide
+                document.getElementById('install-modal').style.display = 'flex';
             }
         }
 

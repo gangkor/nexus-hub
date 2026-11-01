@@ -1,7 +1,10 @@
-const CACHE_NAME = 'pixel-office-v1';
+const CACHE_NAME = 'pixel-office-v2';
 const ASSETS = [
+  './',
   './office.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', (e) => {
