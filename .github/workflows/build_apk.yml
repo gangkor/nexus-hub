@@ -1,0 +1,132 @@
+name: Build Android APK
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Android SDK Build Tools
+        run: |
+          echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "build-tools;34.0.0" "platforms;android-34"
+
+      - name: Build Webview APK
+        run: |
+          mkdir -p build/src/com/gangkor/pixeloffice build/res/values build/res/mipmap build/assets
+          cp office.html build/assets/index.html
+          cp icon-192.png build/res/mipmap/ic_launcher.png
+
+          cat << 'XML' > build/res/values/strings.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">PixelOffice</string>
+          </resources>
+          XML
+
+          cat << 'XML' > build/AndroidManifest.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+              package="com.gangkor.pixeloffice"
+              android:versionCode="1"
+              android:versionName="1.0">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+              <application
+                  android:label="@string/app_name"
+                  android:icon="@mipmap/ic_launcher"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:hardwareAccelerated="true">
+                  <activity
+                      android:name=".MainActivity"
+                      android:configChanges="orientation|screenSize"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          XML
+
+          cat << 'JAVA' > build/src/com/gangkor/pixeloffice/MainActivity.java
+          package com.gangkor.pixeloffice;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          import android.view.Window;
+          import android.view.WindowManager;
+
+          public class MainActivity extends Activity {
+              private WebView webView;
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  requestWindowFeature(Window.FEATURE_NO_TITLE);
+                  getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                  webView = new WebView(this);
+                  WebSettings settings = webView.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  settings.setDatabaseEnabled(true);
+                  settings.setAllowFileAccess(true);
+                  settings.setAllowContentAccess(true);
+                  settings.setAllowFileAccessFromFileURLs(true);
+                  settings.setAllowUniversalAccessFromFileURLs(true);
+                  webView.setWebViewClient(new WebViewClient());
+                  webView.loadUrl("file:///android_asset/index.html");
+                  setContentView(webView);
+              }
+              @Override
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
+                  }
+              }
+          }
+          JAVA
+
+          BUILD_TOOLS="${ANDROID_HOME}/build-tools/34.0.0"
+          PLATFORM="${ANDROID_HOME}/platforms/android-34/android.jar"
+
+          # 1. Generate R.java
+          ${BUILD_TOOLS}/aapt package -f -m -J build/src -M build/AndroidManifest.xml -S build/res -I ${PLATFORM}
+
+          # 2. Compile Java
+          javac -d build/obj -cp ${PLATFORM} build/src/com/gangkor/pixeloffice/*.java
+
+          # 3. Dex
+          ${BUILD_TOOLS}/d8 --output build/ build/obj/com/gangkor/pixeloffice/*.class
+
+          # 4. Package APK
+          ${BUILD_TOOLS}/aapt package -f -M build/AndroidManifest.xml -S build/res -A build/assets -I ${PLATFORM} -F build/unsigned.apk build/
+          cd build && ${BUILD_TOOLS}/aapt add unsigned.apk classes.dex && cd ..
+
+          # 5. Sign APK with debug keystore
+          keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=AndroidDebug,O=Android,C=US"
+          ${BUILD_TOOLS}/apksigner sign --ks debug.keystore --ks-pass pass:android --key-pass pass:android --out PixelOffice.apk build/unsigned.apk
+
+      - name: Upload APK Release Asset
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+        with:
+          files: PixelOffice.apk
+          tag_name: v1.0.0
+          name: PixelOffice Release v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
