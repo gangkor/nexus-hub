@@ -360,13 +360,19 @@
         }
 
         function fetchState() {
-            fetch('/api/office/state')
+            // Priority: fetch live state from active VPS server, fallback to local/cached
+            fetch('http://188.213.161.186:18090/api/office/state')
                 .then(res => res.json())
                 .then(data => {
                     currentData = data;
                     renderDOM(data);
                 })
-                .catch(err => console.log('REST fetch error:', err));
+                .catch(err => {
+                    fetch('/api/office/state')
+                        .then(r => r.json())
+                        .then(d => { currentData = d; renderDOM(d); })
+                        .catch(e => console.log('Local poller fallback'));
+                });
         }
 
         function renderDOM(data) {
