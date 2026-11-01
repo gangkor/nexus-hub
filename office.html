@@ -3,441 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Віртуальний Офіс Агентів — Nexus Pixel Studio (V3 Production)</title>
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#060911">
+    <title>Nexus Pixel Office — Linear Edition V4 (Pro Dashboard)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body {
-            background-color: #060911;
-            color: #e2e8f0;
-            font-family: 'Courier New', Courier, monospace, sans-serif;
-            padding: 8px;
-            max-width: 1200px;
-            margin: 0 auto;
-            overflow-x: hidden;
+        :root {
+            --bg: #08090a;
+            --surface: #0f1011;
+            --surface-elevated: #191a1b;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-subtle: rgba(255, 255, 255, 0.04);
+            --text-primary: #f7f8f8;
+            --text-secondary: #d0d6e0;
+            --text-muted: #8a8f98;
+            --accent: #5e6ad2;
+            --accent-hover: #7170ff;
+            --success: #10b981;
+            --warning: #f59e0b;
         }
 
-        /* DYNAMIC ISLAND */
-        .dynamic-island {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000000;
-            border: 2px solid #38bdf8;
-            border-radius: 24px;
-            padding: 6px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 1000;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9), 0 0 15px rgba(56, 189, 248, 0.4);
-            max-width: 95vw;
-        }
-        .island-dot {
-            width: 8px;
-            height: 8px;
-            background: #34d399;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #34d399;
-            animation: pulse-dot 1.5s infinite;
-        }
-        @keyframes pulse-dot { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
-        .island-text { font-size: 0.75rem; color: #38bdf8; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .island-sub { font-size: 0.65rem; color: #94a3b8; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text-primary); padding: 12px; max-width: 1280px; margin: 0 auto; overflow-x: hidden; font-feature-settings: "cv01", "ss03"; }
 
-        /* HARDWARE TELEMETRY PANEL */
-        .hardware-panel {
-            margin-top: 0;
-            background: #0f172a;
-            border: 2px solid #334155;
+        /* HEADER / DYNAMIC ISLAND */
+        .island-header {
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        }
-        .hw-title {
-            font-size: 0.8rem;
-            color: #34d399;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
             display: flex;
-            justify-content: space-between;
-        }
-        .hw-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
-        }
-        .hw-card {
-            background: #1e293b;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            padding: 8px 10px;
-        }
-        .hw-label { font-size: 0.7rem; color: #94a3b8; margin-bottom: 3px; }
-        .hw-value { font-size: 0.9rem; font-weight: bold; color: #f8fafc; }
-        .progress-bar-bg {
-            background: #090d16; border-radius: 4px; height: 6px; width: 100%; margin-top: 6px; overflow: hidden; border: 1px solid #334155;
-        }
-        .progress-bar-fill {
-            background: linear-gradient(90deg, #38bdf8, #34d399); height: 100%; width: 0%; transition: width 0.5s ease;
-        }
-
-        /* SWARM FEATURES ACCORDION / LIST */
-        .features-panel {
-            background: #111827;
-            border: 2px solid #374151;
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-        }
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .feature-item {
-            background: #030712;
-            border: 1px solid #1f2937;
-            border-radius: 6px;
-            padding: 8px 10px;
-            font-size: 0.74rem;
-        }
-        .feature-title { color: #38bdf8; font-weight: bold; margin-bottom: 2px; }
-        .feature-desc { color: #94a3b8; font-size: 0.68rem; line-height: 1.3; }
-
-        /* HEADER */
-        header {
-            background: #111827;
-            border: 2px solid #374151;
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
-        h1 { font-size: 1rem; color: #34d399; text-transform: uppercase; letter-spacing: 1px; }
-        .metrics-bar { display: flex; gap: 12px; font-size: 0.78rem; color: #9ca3af; flex-wrap: wrap; margin-top: 4px; }
-        .metrics-bar span { color: #f3f4f6; font-weight: bold; }
+        .brand-title { font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
+        .live-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 
-        /* APPROVALS */
-        #approval-container { margin-bottom: 12px; }
-        .approval-card {
-            background: #1f2937; border: 2px dashed #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .approval-info h3 { color: #fbbf24; font-size: 0.88rem; margin-bottom: 4px; }
-        .approval-info p { color: #9ca3af; font-size: 0.76rem; }
-        .approval-actions { display: flex; gap: 8px; }
-        .btn {
-            background: #374151; color: #fff; border: none; padding: 6px 12px;
-            font-family: inherit; font-size: 0.76rem; cursor: pointer; border-radius: 4px; font-weight: bold;
-        }
-        .btn-approve { background: #059669; }
-        .btn-reject { background: #dc2626; }
+        .metrics-pill-bar { display: flex; gap: 10px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; }
+        .metrics-pill-bar span { color: var(--text-primary); font-weight: 500; font-family: 'JetBrains+Mono', monospace; }
 
-        /* CANVAS STUDIO ROOM */
-        .canvas-container {
-            background: #090d16; border: 3px solid #334155; border-radius: 12px; padding: 8px; position: relative; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center;
+        /* HARDWARE TELEMETRY GRID */
+        .hw-section { margin-bottom: 16px; }
+        .section-title { font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.8px; margin-bottom: 8px; font-weight: 600; }
+        .hw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .hw-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            position: relative;
+            overflow: hidden;
         }
-        .room-title {
-            align-self: flex-start; font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px;
+        .hw-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .hw-val { font-size: 15px; font-weight: 600; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; }
+        .progress-track { background: rgba(255,255,255,0.04); border-radius: 3px; height: 4px; width: 100%; margin-top: 8px; overflow: hidden; }
+        .progress-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.4s ease; }
+
+        /* STUDIO CANVAS ROOM */
+        .studio-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         #office-canvas {
-            background: #060911; border: 2px solid #1e293b; border-radius: 8px; image-rendering: pixelated; max-width: 100%; height: auto; cursor: pointer;
+            background: #050608;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+            cursor: pointer;
         }
 
-        /* AGENTS GRID */
+        /* AGENTS DESKS GRID */
         .desks-grid {
-            width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 12px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
         }
         .desk-card {
-            background: #111827; border: 2px solid #374151; border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.2s ease;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .desk-card:hover { border-color: #38bdf8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25); }
+        .desk-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(94, 106, 210, 0.2);
+        }
         .desk-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .agent-name { font-size: 0.82rem; color: #38bdf8; font-weight: bold; }
-        .agent-status-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: #1f2937; border: 1px solid #4b5563; }
-        .agent-role { font-size: 0.72rem; color: #94a3b8; margin-bottom: 6px; }
+        .agent-name { font-size: 13px; color: var(--text-primary); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+        .agent-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-secondary); }
+        .agent-role { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
         .agent-task {
-            font-size: 0.7rem; background: #030712; padding: 6px; border-radius: 4px; border: 1px dashed #374151; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 11px; background: rgba(0,0,0,0.4); padding: 6px 8px; border-radius: 6px;
+            border: 1px solid var(--border-subtle); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        /* CONSOLE LOG */
-        .console-box { background: #111827; border: 2px solid #374151; border-radius: 10px; padding: 12px; margin-bottom: 16px; }
-        .console-title { font-size: 0.78rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; }
+        /* APPROVALS BANNER */
+        #approval-container { margin-bottom: 16px; }
+        .approval-card {
+            background: var(--surface-elevated);
+            border: 1px dashed var(--warning);
+            padding: 14px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .approval-info h3 { color: var(--warning); font-size: 13px; margin-bottom: 4px; font-weight: 600; }
+        .approval-info p { color: var(--text-muted); font-size: 12px; }
+        .btn-group { display: flex; gap: 8px; }
+        .btn {
+            background: rgba(255,255,255,0.04); color: var(--text-primary); border: 1px solid var(--border);
+            padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer;
+        }
+        .btn-approve { background: var(--success); color: #fff; border: none; }
+        .btn-reject { background: #ef4444; color: #fff; border: none; }
+
+        /* CONSOLE LOGS */
+        .console-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+        .console-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .console-pre {
-            background: #030712; border: 1px solid #1f2937; padding: 8px; border-radius: 6px; font-size: 0.72rem; color: #34d399; height: 110px; overflow-y: auto; white-space: pre-wrap;
+            background: #030406; border: 1px solid var(--border-subtle); padding: 10px; border-radius: 8px;
+            font-size: 11px; color: var(--success); height: 120px; overflow-y: auto; white-space: pre-wrap; font-family: 'JetBrains Mono', monospace;
         }
 
         /* MODAL */
         #modal-backdrop {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 12px;
+            background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 16px;
         }
         .modal-content {
-            background: #111827; border: 2px solid #38bdf8; border-radius: 12px; width: 100%; max-width: 480px; padding: 18px; position: relative;
+            background: var(--surface-elevated); border: 1px solid var(--accent); border-radius: 14px;
+            width: 100%; max-width: 500px; padding: 20px; position: relative; box-shadow: 0 12px 40px rgba(0,0,0,0.8);
         }
-        .modal-close { position: absolute; top: 10px; right: 15px; font-size: 1.3rem; cursor: pointer; color: #94a3b8; }
-        .modal-title { font-size: 1rem; color: #38bdf8; margin-bottom: 4px; font-weight: bold; }
-        .modal-body { font-size: 0.78rem; color: #cbd5e1; line-height: 1.4; margin-bottom: 10px; }
+        .modal-close { position: absolute; top: 12px; right: 16px; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
+        .modal-title { font-size: 15px; color: var(--text-primary); margin-bottom: 4px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+        .modal-body { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
         .modal-metrics {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #030712;
-            padding: 10px; border-radius: 6px; font-size: 0.75rem; border: 1px solid #1f2937; margin-bottom: 10px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #030406;
+            padding: 10px; border-radius: 8px; font-size: 12px; border: 1px solid var(--border); margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;
         }
-        .modal-log { background: #030712; border: 1px solid #1f2937; padding: 8px; border-radius: 6px; font-size: 0.7rem; color: #34d399; max-height: 110px; overflow-y: auto; white-space: pre-wrap; }
+        .modal-log { background: #030406; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-size: 11px; color: var(--success); max-height: 130px; overflow-y: auto; white-space: pre-wrap; font-family: 'JetBrains Mono', monospace; }
     </style>
 </head>
 <body>
 
-    <!-- DYNAMIC ISLAND -->
-    <div class="dynamic-island" onclick="playRetroSound('click'); fetchState();">
-        <div class="island-dot"></div>
-        <div>
-            <div class="island-text" id="island-main">Nexus V3 Production: WebSocket Online</div>
-            <div class="island-sub" id="island-sub">Score: 2,770,635 pts | RAM: 73.4 MB / 4096 MB</div>
+    <!-- HEADER / LIVE STATUS -->
+    <div class="island-header">
+        <div class="brand-title">
+            <div class="live-dot"></div>
+            <span id="header-title">Nexus Pixel Studio — Linear V4</span>
+        </div>
+        <div class="metrics-pill-bar">
+            <div>Score: <span id="lbl-score">2,770,635</span></div>
+            <div>Uptime: <span id="lbl-uptime">257h</span></div>
+            <div>RAM: <span id="lbl-ram">73.4 MB</span></div>
         </div>
     </div>
 
-    
-    <!-- ALWAYS VISIBLE PWA INSTALL / WIDGET BAR -->
-    <div id="pwa-install-bar" style="margin-top: 48px; background: linear-gradient(135deg, #1e1b4b, #312e81); border: 2px solid #818cf8; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); margin-bottom: 12px;">
-        <div>
-            <div style="font-size: 0.85rem; font-weight: bold; color: #ffffff;">📱 ВСТАНОВИТИ ДОДАТОК / ВІДЖЕТ НА ЕКРАН</div>
-            <div style="font-size: 0.7rem; color: #cbd5e1; margin-top: 2px;">Працює автономно без Telegram прямо з робочого столу смартфона</div>
-        </div>
-        <button onclick="triggerPWAInstall()" style="background: #4f46e5; color: #ffffff; border: 2px solid #a5b4fc; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 0.8rem; cursor: pointer; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.4);">📥 СКАЧАТИ</button>
-    </div>
-
-    <!-- HARDWARE TELEMETRY PANEL -->
-    <div class="hardware-panel">
-        <div class="hw-title">
-            <span>⚙️ Апаратна телеметрія VPS (gangkor-lab-btrfs)</span>
-            <span id="ws-status" style="color: #34d399;">● WS: Підключено</span>
-        </div>
+    <!-- HARDWARE TELEMETRY -->
+    <div class="hw-section">
+        <div class="section-title">Апаратне забезпечення VPS (gangkor-lab-btrfs)</div>
         <div class="hw-grid">
             <div class="hw-card">
-                <div class="hw-label">VPS RAM (Зайнято / Всього)</div>
-                <div class="hw-value" id="hw-ram-val">73.4 MB / 4096 MB</div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" id="hw-ram-bar" style="width: 1.8%;"></div></div>
+                <div class="hw-label">VPS RAM (Зайнято / 4096 МБ)</div>
+                <div class="hw-val" id="hw-ram">73.4 MB (1.8%)</div>
+                <div class="progress-track"><div class="progress-fill" id="hw-ram-fill" style="width: 1.8%;"></div></div>
             </div>
             <div class="hw-card">
                 <div class="hw-label">CPU Load Average (1m, 5m, 15m)</div>
-                <div class="hw-value" id="hw-cpu-val">0.23, 0.32, 0.27</div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" id="hw-cpu-bar" style="width: 15%;"></div></div>
+                <div class="hw-val" id="hw-cpu">0.23, 0.32, 0.27</div>
+                <div class="progress-track"><div class="progress-fill" id="hw-cpu-fill" style="width: 15%;"></div></div>
             </div>
             <div class="hw-card">
                 <div class="hw-label">NVMe / Btrfs Диск (24 ГБ)</div>
-                <div class="hw-value" id="hw-disk-val">1.8 GB / 24.0 GB (7.5%)</div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" id="hw-disk-bar" style="width: 7.5%;"></div></div>
+                <div class="hw-val" id="hw-disk">1.8 GB / 24.0 GB (7.5%)</div>
+                <div class="progress-track"><div class="progress-fill" id="hw-disk-fill" style="width: 7.5%;"></div></div>
             </div>
         </div>
     </div>
-
-    <!-- 10 SWARM FEATURES PANEL -->
-    <div class="features-panel">
-        <div class="hw-title" style="margin-bottom: 4px;">
-            <span>💡 10 Інженерних Фіч, Спроєктованих Роєм Агентів</span>
-            <span style="color: #38bdf8; font-size: 0.7rem;">localStorage + Web Audio</span>
-        </div>
-        <div class="features-grid" id="features-grid">
-            <!-- Dynamic Features -->
-        </div>
-    </div>
-
-    <header>
-        <div>
-            <h1 id="header-title">🏢 Офіс Агентів: V3 Production</h1>
-            <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 2px;" id="header-node">Вузол: gangkor-lab-btrfs (188.213.161.186)</div>
-        </div>
-        <div class="metrics-bar">
-            <div>Працюють: <span id="lbl-active">5</span></div>
-            <div>Очікують: <span id="lbl-idle">0</span></div>
-            <div>Score: <span id="lbl-score">2,770,635</span></div>
-            <div>Uptime: <span id="lbl-uptime">257h</span></div>
-        </div>
-    </header>
 
     <div id="approval-container"></div>
 
-    <div class="canvas-container">
-        <div class="room-title">Віртуальний офіс (HTML5 Canvas 16-Bit Pixel Studio + Matrix FX)</div>
-        <canvas id="office-canvas" width="800" height="360"></canvas>
+    <!-- CANVAS STUDIO ROOM -->
+    <div class="studio-box">
+        <div class="room-title" style="align-self: flex-start; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Віртуальний офіс агентів (16-bit Canvas Studio)</div>
+        <canvas id="office-canvas" width="800" height="340"></canvas>
         <div class="desks-grid" id="desks-grid"></div>
     </div>
 
-    <div class="console-box">
-        <div class="console-title">
-            <span>📡 Поточний потік логів (Real-Time WebSocket Stream)</span>
-            <span style="cursor: pointer; color: #38bdf8;" onclick="exportJSONState()">[💾 Експорт JSON]</span>
+    <!-- CONSOLE LOGS -->
+    <div class="console-panel">
+        <div class="console-header">
+            <span>📡 Поточний потік логів (WebSocket / Telemetry Stream)</span>
+            <span style="cursor: pointer; color: var(--accent);" onclick="exportJSONState()">[💾 Експорт JSON]</span>
         </div>
-        <div class="console-pre" id="console-log">Підключення до WebSocket...</div>
+        <div class="console-pre" id="console-log">Підключення до серверного стріму...</div>
     </div>
 
-    <!-- PWA Install Modal -->
-    <div id="install-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; padding: 16px;" onclick="this.style.display='none'">
-        <div style="background: #111827; border: 2px solid #818cf8; border-radius: 14px; max-width: 440px; width: 100%; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);" onclick="event.stopPropagation()">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div style="font-size: 1rem; font-weight: bold; color: #38bdf8;">📥 Встановлення на екран</div>
-                <div style="font-size: 1.4rem; color: #94a3b8; cursor: pointer;" onclick="document.getElementById('install-modal').style.display='none'">×</div>
-            </div>
-            <div style="font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 14px;">
-                <b>Як додати на головний екран:</b><br><br>
-                <b>1. Якщо ти в Chrome (Android):</b><br>
-                Натисни <b>три крапки (⋮)</b> у правому верхньому кутку браузера та вибери <b>«Встановити додаток»</b> (або <i>«Додати на головний екран»</i>).<br><br>
-                <b>2. Якщо ти відкрив посилання всередині Telegram:</b><br>
-                Натисни <b>три крапки (⋮)</b> вгорі справа вікна Telegram та вибери <b>«Відкрити в Chrome»</b>, після чого з'явиться кнопка встановлення.<br><br>
-                <b>3. Якщо ти на iPhone (Safari):</b><br>
-                Натисни кнопку <b>«Поділитися»</b> (квадрат зі стрілкою вгору) внизу екрана та обери <b>«На початковий екран»</b>.
-            </div>
-            <button onclick="document.getElementById('install-modal').style.display='none'" style="width: 100%; background: #4f46e5; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-family: inherit; font-size: 0.85rem; cursor: pointer;">ЗРОЗУМІЛО</button>
-        </div>
-    </div>
-
-    <!-- Modal -->
+    <!-- MODAL -->
     <div id="modal-backdrop" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-close" onclick="closeModalForce()">×</div>
             <div class="modal-title" id="modal-agent-name">Агент</div>
-            <div class="modal-body" id="modal-agent-role">Роль та файл</div>
+            <div class="modal-body" id="modal-agent-role">Роль</div>
             <div class="modal-metrics" id="modal-agent-metrics"></div>
             <div class="modal-log" id="modal-agent-log">Лог...</div>
         </div>
     </div>
 
     <script>
-        
-        // --- PWA SERVICE WORKER & DOWNLOAD HANDLER ---
-        let deferredPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            console.log('[PWA] beforeinstallprompt captured');
-        });
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').then(() => {
-                console.log('[PWA] Service Worker Registered');
-            }).catch(err => console.log('[PWA] SW Error:', err));
-        }
-
-        function triggerPWAInstall() {
-            playRetroSound('success');
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        alert('Додаток успішно встановлено на головний екран!');
-                    }
-                    deferredPrompt = null;
-                });
-            } else {
-                // Open step-by-step modal guide
-                document.getElementById('install-modal').style.display = 'flex';
-            }
-        }
-
-        // --- FEATURE 1: WEB AUDIO 8-BIT SYNTHESIZER ---
-        let audioCtx = null;
-        function playRetroSound(type) {
-            try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'square';
-                
-                const now = audioCtx.currentTime;
-                if (type === 'click') {
-                    osc.frequency.setValueAtTime(440, now);
-                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
-                    gain.gain.setValueAtTime(0.08, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-                    osc.start(now);
-                    osc.stop(now + 0.08);
-                } else if (type === 'success') {
-                    osc.frequency.setValueAtTime(523.25, now);
-                    osc.frequency.setValueAtTime(659.25, now + 0.08);
-                    osc.frequency.setValueAtTime(783.99, now + 0.16);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                    osc.start(now);
-                    osc.stop(now + 0.3);
-                }
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-            } catch (e) {
-                // Audio context not allowed until user interaction
-            }
-        }
-
-        // --- FEATURE 2: PERSISTENT LOCALSTORAGE STATE ---
-        function saveLocalState(key, val) {
-            try { localStorage.setItem('nexus_' + key, JSON.stringify(val)); } catch(e) {}
-        }
-        function getLocalState(key, fallback) {
-            try {
-                const item = localStorage.getItem('nexus_' + key);
-                return item ? JSON.parse(item) : fallback;
-            } catch(e) { return fallback; }
-        }
-
         let currentData = null;
         let tick = 0;
-        // --- FEATURE 9: ZERO-LEAK CREDENTIAL GUARD ---
-        function redactCredentials(text) {
-            if (!text) return '';
-            return text.replace(/(ghp_[a-zA-Z0-9]{36}|gsk_[a-zA-Z0-9]{30,}|eyJ[a-zA-Z0-9_-]{20,})/g, '«redacted_token»');
-        }
-
-        // --- FEATURE 6: BATTERY SAVER & TAB VISIBILITY THROTTLING ---
-        let isTabActive = true;
-        document.addEventListener('visibilitychange', () => {
-            isTabActive = !document.hidden;
-        });
-
         const canvas = document.getElementById('office-canvas');
         const ctx = canvas.getContext('2d');
 
         const deskPositions = {
             'harness_router': { x: 330, y: 70, width: 140, height: 95, color: '#f59e0b', sprite: 'router' },
             'claude_code':    { x: 70,  y: 50, width: 120, height: 90, color: '#a855f7', sprite: 'claude' },
-            'aider':          { x: 70,  y: 200, width: 120, height: 90, color: '#3b82f6', sprite: 'aider' },
+            'aider':          { x: 70,  y: 190, width: 120, height: 90, color: '#3b82f6', sprite: 'aider' },
             'oh_my_pi':       { x: 610, y: 50, width: 120, height: 90, color: '#ec4899', sprite: 'pi' },
-            'gitleaks':       { x: 610, y: 200, width: 120, height: 90, color: '#10b981', sprite: 'gitleaks' }
+            'gitleaks':       { x: 610, y: 190, width: 120, height: 90, color: '#10b981', sprite: 'gitleaks' }
         };
 
         function drawOffice() {
             tick++;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Floor
             const ts = 20;
             for (let x = 0; x < canvas.width; x += ts) {
                 for (let y = 0; y < canvas.height; y += ts) {
-                    ctx.fillStyle = ((x / ts + y / ts) % 2 === 0) ? '#090d16' : '#0e1626';
+                    ctx.fillStyle = ((x / ts + y / ts) % 2 === 0) ? '#08090a' : '#0f1011';
                     ctx.fillRect(x, y, ts, ts);
                 }
             }
 
             // Server rack
-            ctx.fillStyle = '#1e293b';
+            ctx.fillStyle = '#191a1b';
             ctx.fillRect(360, 5, 80, 42);
-            ctx.strokeStyle = '#475569';
+            ctx.strokeStyle = '#34343a';
             ctx.lineWidth = 2;
             ctx.strokeRect(360, 5, 80, 42);
             for (let i = 0; i < 3; i++) {
-                ctx.fillStyle = (Math.sin(tick * 0.12 + i) > 0) ? '#34d399' : '#059669';
+                ctx.fillStyle = (Math.sin(tick * 0.12 + i) > 0) ? '#10b981' : '#059669';
                 ctx.fillRect(370 + i * 22, 16, 12, 6);
             }
 
@@ -447,21 +277,24 @@
                 const pos = deskPositions[agent.id];
                 if (!pos) return;
 
-                ctx.fillStyle = '#1e293b';
+                // Desk
+                ctx.fillStyle = '#191a1b';
                 ctx.fillRect(pos.x, pos.y + 35, pos.width, 45);
-                ctx.strokeStyle = '#475569';
+                ctx.strokeStyle = '#34343a';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(pos.x, pos.y + 35, pos.width, 45);
 
-                ctx.fillStyle = '#030712';
+                // Monitor
+                ctx.fillStyle = '#030406';
                 ctx.fillRect(pos.x + 25, pos.y + 10, 50, 30);
-                ctx.strokeStyle = '#38bdf8';
+                ctx.strokeStyle = '#5e6ad2';
                 ctx.lineWidth = 1;
                 ctx.strokeRect(pos.x + 25, pos.y + 10, 50, 30);
 
-                ctx.fillStyle = (Math.floor(tick / 8) % 2 === 0) ? '#0284c7' : '#34d399';
+                ctx.fillStyle = (Math.floor(tick / 8) % 2 === 0) ? '#5e6ad2' : '#10b981';
                 ctx.fillRect(pos.x + 28, pos.y + 13, 44, 24);
 
+                // Character
                 const bobbing = Math.sin(tick * 0.18 + pos.x) * 2;
                 const charX = pos.x + (pos.width / 2) - 12;
                 const charY = pos.y - 10 + bobbing;
@@ -473,36 +306,34 @@
                 ctx.fillStyle = pos.color;
                 ctx.fillRect(charX, charY, 24, 6);
 
-                ctx.fillStyle = '#0f172a';
+                ctx.fillStyle = '#08090a';
                 ctx.fillRect(charX + 5, charY + 8, 4, 4);
                 ctx.fillRect(charX + 15, charY + 8, 4, 4);
 
+                // Status bubble
                 const bubbleW = pos.width + 10;
                 const bubbleX = pos.x - 5;
                 const bubbleY = pos.y - 32 + bobbing;
 
-                ctx.fillStyle = '#0f172a';
+                ctx.fillStyle = '#0f1011';
                 ctx.fillRect(bubbleX, bubbleY, bubbleW, 20);
                 ctx.strokeStyle = pos.color;
                 ctx.strokeRect(bubbleX, bubbleY, bubbleW, 20);
 
-                ctx.fillStyle = '#f8fafc';
-                ctx.font = 'bold 10px monospace';
+                ctx.fillStyle = '#f7f8f8';
+                ctx.font = 'bold 9px monospace';
                 ctx.fillText(agent.state_label, bubbleX + 6, bubbleY + 14);
 
-                ctx.fillStyle = '#38bdf8';
-                ctx.font = 'bold 11px monospace';
+                // Name tag
+                ctx.fillStyle = '#d0d6e0';
+                ctx.font = 'bold 10px monospace';
                 ctx.fillText(agent.name, pos.x + 8, pos.y + 92);
             });
 
-            
-            const delay = isTabActive ? 16 : 100; // Throttle to ~10fps when backgrounded
-            setTimeout(() => requestAnimationFrame(drawOffice), delay);
-    
+            requestAnimationFrame(drawOffice);
         }
 
         canvas.addEventListener('click', function(e) {
-            playRetroSound('click');
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
@@ -520,43 +351,12 @@
 
         function fallbackAgents() {
             return [
-                { id: 'harness_router', name: 'harness-router', role: 'Диспетчер', state: 'analyzing', state_label: '🟢 WS Stream', current_task: 'WebSocket Bridge Online', active_file: 'server.py', metrics: {ram: '14.2 MB', tasks_done: 51059, sla: '0.18s', uptime: '257h'}, recent_log: 'WS connected.' },
-                { id: 'claude_code', name: 'claude-code', role: 'Архітектор', state: 'coding', state_label: '🟢 Проєктує', current_task: 'Web Audio & IndexedDB', active_file: 'recipes.json', metrics: {ram: '28.6 MB', tasks_done: 113, sla: '0.22s', uptime: '257h'}, recent_log: 'Specs OK.' },
-                { id: 'aider', name: 'aider', role: 'Кодер', state: 'coding', state_label: '🟢 Кодить', current_task: 'Matrix FX & State', active_file: 'office.html', metrics: {ram: '22.4 MB', tasks_done: 12950, sla: '0.20s', uptime: '257h'}, recent_log: 'Patch OK.' },
-                { id: 'oh_my_pi', name: 'oh-my-pi', role: 'Хірург', state: 'action_required', state_label: '⚠️ Дозвіл', current_task: 'Solana CloseAccount', active_file: 'sweeper.py', metrics: {ram: '18.1 MB', tasks_done: 9940, sla: '0.19s', uptime: '257h'}, recent_log: 'Ready.' },
-                { id: 'gitleaks', name: 'gitleaks', role: 'Безпека', state: 'patrolling', state_label: '🛡️ Сканує', current_task: 'Log credential mask', active_file: 'repo', metrics: {ram: '9.8 MB', tasks_done: 51059, sla: '0.04s', uptime: '257h'}, recent_log: '0 leaks.' }
+                { id: 'harness_router', name: 'harness-router', role: 'Диспетчер', state: 'analyzing', state_label: '🟢 Океанує роєм', current_task: 'UHP роутинг завдань', active_file: 'server.py', metrics: {ram: '14.2 MB', tasks_done: 51059, sla: '0.18s', uptime: '257h'}, recent_log: 'WebSocket stream active.' },
+                { id: 'claude_code', name: 'claude-code', role: 'Архітектор', state: 'coding', state_label: '🟢 Проєктує', current_task: 'Дизайн лінійних компонентів', active_file: 'recipes_kb.json', metrics: {ram: '28.6 MB', tasks_done: 113, sla: '0.22s', uptime: '257h'}, recent_log: 'Architecture specs verified.' },
+                { id: 'aider', name: 'aider', role: 'Парний кодер', state: 'coding', state_label: '🟢 Кодить', current_task: 'Генерація diff-патчів', active_file: 'parser.py', metrics: {ram: '22.4 MB', tasks_done: 12950, sla: '0.20s', uptime: '257h'}, recent_log: 'Patch verification OK.' },
+                { id: 'oh_my_pi', name: 'oh-my-pi', role: 'Хірург AST', state: 'action_required', state_label: '⚠️ Дозвіл', current_task: 'Симуляція Solana CloseAccount', active_file: 'sweeper.py', metrics: {ram: '18.1 MB', tasks_done: 9940, sla: '0.19s', uptime: '257h'}, recent_log: 'Accounts verified.' },
+                { id: 'gitleaks', name: 'gitleaks', role: 'Безпека', state: 'patrolling', state_label: '🛡️ Сканує', current_task: 'Маскування токенів у логах', active_file: 'repo', metrics: {ram: '9.8 MB', tasks_done: 51059, sla: '0.04s', uptime: '257h'}, recent_log: '0 leaks found.' }
             ];
-        }
-
-        // --- FEATURE 3: WEBSOCKET / REST CLIENT ---
-        function setupWebSocket() {
-            const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-            const wsHost = window.location.hostname || '188.213.161.186';
-            const wsUrl = wsProtocol + wsHost + ':18091';
-
-            try {
-                const ws = new WebSocket(wsUrl);
-                ws.onopen = () => {
-                    document.getElementById('ws-status').innerText = '● WS: Live Sync';
-                };
-                ws.onmessage = (event) => {
-                    try {
-                        const data = JSON.parse(event.data);
-                        currentData = data;
-                        renderDOM(data);
-                    } catch(e) {}
-                };
-                ws.onerror = () => {
-                    document.getElementById('ws-status').innerText = '● WS: Fallback REST';
-                    fetchState();
-                };
-                ws.onclose = () => {
-                    document.getElementById('ws-status').innerText = '● WS: Реконнект...';
-                    setTimeout(setupWebSocket, 4000);
-                };
-            } catch(e) {
-                fetchState();
-            }
         }
 
         function fetchState() {
@@ -570,37 +370,21 @@
         }
 
         function renderDOM(data) {
-            document.getElementById('header-title').innerText = '🏢 ' + data.office_title;
-            document.getElementById('header-node').innerText = 'Вузол: ' + data.node;
-            document.getElementById('lbl-active').innerText = data.active_count;
-            document.getElementById('lbl-idle').innerText = data.idle_count;
+            document.getElementById('header-title').innerText = 'Nexus Pixel Studio — Linear V4';
             document.getElementById('lbl-score').innerText = data.total_score.toLocaleString();
             document.getElementById('lbl-uptime').innerText = data.uptime;
+            document.getElementById('lbl-ram').innerText = data.hardware ? data.hardware.ram_used_mb + ' MB' : '73.4 MB';
 
             if (data.hardware) {
                 const hw = data.hardware;
-                document.getElementById('hw-ram-val').innerText = `${hw.ram_used_mb} MB / ${hw.ram_total_mb} MB (${hw.ram_percent}%)`;
-                document.getElementById('hw-ram-bar').style.width = hw.ram_percent + '%';
+                document.getElementById('hw-ram').innerText = `${hw.ram_used_mb} MB / ${hw.ram_total_mb} MB (${hw.ram_percent}%)`;
+                document.getElementById('hw-ram-fill').style.width = hw.ram_percent + '%';
 
-                document.getElementById('hw-cpu-val').innerText = hw.cpu_loads.join(', ');
-                document.getElementById('hw-cpu-bar').style.width = Math.min(parseFloat(hw.cpu_loads[0]) * 50, 100) + '%';
+                document.getElementById('hw-cpu').innerText = hw.cpu_loads.join(', ');
+                document.getElementById('hw-cpu-fill').style.width = Math.min(parseFloat(hw.cpu_loads[0]) * 50, 100) + '%';
 
-                document.getElementById('hw-disk-val').innerText = `${hw.disk_used_gb} GB / ${hw.disk_total_gb} GB (${hw.disk_percent}%)`;
-                document.getElementById('hw-disk-bar').style.width = hw.disk_percent + '%';
-            }
-
-            if (data.features) {
-                const fGrid = document.getElementById('features-grid');
-                let fHtml = '';
-                data.features.forEach(feat => {
-                    fHtml += `
-                        <div class="feature-item">
-                            <div class="feature-title">⚡ ${feat.title}</div>
-                            <div class="feature-desc">${feat.desc}</div>
-                        </div>
-                    `;
-                });
-                fGrid.innerHTML = fHtml;
+                document.getElementById('hw-disk').innerText = `${hw.disk_used_gb} GB / ${hw.disk_total_gb} GB (${hw.disk_percent}%)`;
+                document.getElementById('hw-disk-fill').style.width = hw.disk_percent + '%';
             }
 
             // Approvals
@@ -614,9 +398,9 @@
                                 <h3>[!] ЗАПИТ ВІД АГЕНТА: ${appr.agent}</h3>
                                 <p><b>${appr.title}</b> — ${appr.desc}</p>
                             </div>
-                            <div class="approval-actions">
-                                <button class="btn btn-approve" onclick="playRetroSound('success'); sendApproval('${appr.id}', 'approve')">Дозволити</button>
-                                <button class="btn btn-reject" onclick="playRetroSound('click'); sendApproval('${appr.id}', 'reject')">Відхилити</button>
+                            <div class="btn-group">
+                                <button class="btn btn-approve" onclick="sendApproval('${appr.id}', 'approve')">Дозволити</button>
+                                <button class="btn btn-reject" onclick="sendApproval('${appr.id}', 'reject')">Відхилити</button>
                             </div>
                         </div>
                     `;
@@ -629,10 +413,10 @@
             let gridHtml = '';
             (data.agents || []).forEach(agent => {
                 gridHtml += `
-                    <div class="desk-card" onclick="playRetroSound('click'); openModal('${agent.id}')">
+                    <div class="desk-card" onclick="openModal('${agent.id}')">
                         <div class="desk-header">
                             <span class="agent-name">${agent.name}</span>
-                            <span class="agent-status-badge">${agent.state_label}</span>
+                            <span class="agent-badge">${agent.state_label}</span>
                         </div>
                         <div class="agent-role">${agent.role}</div>
                         <div class="agent-task" title="${agent.current_task}">⚡ ${agent.current_task}</div>
@@ -690,26 +474,22 @@
         }
 
         function exportJSONState() {
-            playRetroSound('success');
             if (!currentData) {
-                alert('Дані телеметрії ще завантажуються...');
+                alert('Дані телеметрії завантажуються...');
                 return;
             }
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentData, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "nexus_pixel_office_v3_telemetry.json");
+            downloadAnchor.setAttribute("download", "nexus_pixel_office_linear_v4.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
         }
 
-        
-            const delay = isTabActive ? 16 : 100; // Throttle to ~10fps when backgrounded
-            setTimeout(() => requestAnimationFrame(drawOffice), delay);
-    
-        setupWebSocket();
-        setInterval(fetchState, 5000);
+        requestAnimationFrame(drawOffice);
+        fetchState();
+        setInterval(fetchState, 4000);
     </script>
 </body>
 </html>
