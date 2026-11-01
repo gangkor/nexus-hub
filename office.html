@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Віртуальний Офіс Агентів — Nexus Pixel Studio (V2)</title>
+    <title>Віртуальний Офіс Агентів — Nexus Pixel Studio (V3 Production)</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#060911">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -49,7 +49,7 @@
         .island-text { font-size: 0.75rem; color: #38bdf8; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .island-sub { font-size: 0.65rem; color: #94a3b8; }
 
-        /* HARDWARE TELEMETRY PANEL (RAM, CPU, DISK) */
+        /* HARDWARE TELEMETRY PANEL */
         .hardware-panel {
             margin-top: 48px;
             background: #0f172a;
@@ -82,20 +82,35 @@
         .hw-label { font-size: 0.7rem; color: #94a3b8; margin-bottom: 3px; }
         .hw-value { font-size: 0.9rem; font-weight: bold; color: #f8fafc; }
         .progress-bar-bg {
-            background: #090d16;
-            border-radius: 4px;
-            height: 6px;
-            width: 100%;
-            margin-top: 6px;
-            overflow: hidden;
-            border: 1px solid #334155;
+            background: #090d16; border-radius: 4px; height: 6px; width: 100%; margin-top: 6px; overflow: hidden; border: 1px solid #334155;
         }
         .progress-bar-fill {
-            background: linear-gradient(90deg, #38bdf8, #34d399);
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #38bdf8, #34d399); height: 100%; width: 0%; transition: width 0.5s ease;
         }
+
+        /* SWARM FEATURES ACCORDION / LIST */
+        .features-panel {
+            background: #111827;
+            border: 2px solid #374151;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .feature-item {
+            background: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.74rem;
+        }
+        .feature-title { color: #38bdf8; font-weight: bold; margin-bottom: 2px; }
+        .feature-desc { color: #94a3b8; font-size: 0.68rem; line-height: 1.3; }
 
         /* HEADER */
         header {
@@ -116,14 +131,7 @@
         /* APPROVALS */
         #approval-container { margin-bottom: 12px; }
         .approval-card {
-            background: #1f2937;
-            border: 2px dashed #f59e0b;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #1f2937; border: 2px dashed #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
         }
         .approval-info h3 { color: #fbbf24; font-size: 0.88rem; margin-bottom: 4px; }
         .approval-info p { color: #9ca3af; font-size: 0.76rem; }
@@ -137,70 +145,36 @@
 
         /* CANVAS STUDIO ROOM */
         .canvas-container {
-            background: #090d16;
-            border: 3px solid #334155;
-            border-radius: 12px;
-            padding: 8px;
-            position: relative;
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: #090d16; border: 3px solid #334155; border-radius: 12px; padding: 8px; position: relative; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center;
         }
         .room-title {
-            align-self: flex-start;
-            font-size: 0.72rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 6px;
+            align-self: flex-start; font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px;
         }
         #office-canvas {
-            background: #060911;
-            border: 2px solid #1e293b;
-            border-radius: 8px;
-            image-rendering: pixelated;
-            max-width: 100%;
-            height: auto;
-            cursor: pointer;
+            background: #060911; border: 2px solid #1e293b; border-radius: 8px; image-rendering: pixelated; max-width: 100%; height: auto; cursor: pointer;
         }
 
         /* AGENTS GRID */
         .desks-grid {
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 10px;
-            margin-top: 12px;
+            width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 12px;
         }
         .desk-card {
-            background: #111827;
-            border: 2px solid #374151;
-            border-radius: 8px;
-            padding: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            background: #111827; border: 2px solid #374151; border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.2s ease;
         }
-        .desk-card:hover {
-            border-color: #38bdf8;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
-        }
+        .desk-card:hover { border-color: #38bdf8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25); }
         .desk-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .agent-name { font-size: 0.82rem; color: #38bdf8; font-weight: bold; }
         .agent-status-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: #1f2937; border: 1px solid #4b5563; }
         .agent-role { font-size: 0.72rem; color: #94a3b8; margin-bottom: 6px; }
         .agent-task {
-            font-size: 0.7rem; background: #030712; padding: 6px; border-radius: 4px;
-            border: 1px dashed #374151; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 0.7rem; background: #030712; padding: 6px; border-radius: 4px; border: 1px dashed #374151; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
         /* CONSOLE LOG */
         .console-box { background: #111827; border: 2px solid #374151; border-radius: 10px; padding: 12px; margin-bottom: 16px; }
-        .console-title { font-size: 0.78rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 6px; }
+        .console-title { font-size: 0.78rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; }
         .console-pre {
-            background: #030712; border: 1px solid #1f2937; padding: 8px; border-radius: 6px;
-            font-size: 0.72rem; color: #34d399; height: 110px; overflow-y: auto; white-space: pre-wrap;
+            background: #030712; border: 1px solid #1f2937; padding: 8px; border-radius: 6px; font-size: 0.72rem; color: #34d399; height: 110px; overflow-y: auto; white-space: pre-wrap;
         }
 
         /* MODAL */
@@ -209,8 +183,7 @@
             background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 12px;
         }
         .modal-content {
-            background: #111827; border: 2px solid #38bdf8; border-radius: 12px;
-            width: 100%; max-width: 480px; padding: 18px; position: relative;
+            background: #111827; border: 2px solid #38bdf8; border-radius: 12px; width: 100%; max-width: 480px; padding: 18px; position: relative;
         }
         .modal-close { position: absolute; top: 10px; right: 15px; font-size: 1.3rem; cursor: pointer; color: #94a3b8; }
         .modal-title { font-size: 1rem; color: #38bdf8; margin-bottom: 4px; font-weight: bold; }
@@ -225,11 +198,11 @@
 <body>
 
     <!-- DYNAMIC ISLAND -->
-    <div class="dynamic-island" onclick="fetchState()">
+    <div class="dynamic-island" onclick="playRetroSound('click'); fetchState();">
         <div class="island-dot"></div>
         <div>
-            <div class="island-text" id="island-main">Marathon 100/100: Агенти на сервері активні</div>
-            <div class="island-sub" id="island-sub">Score: 2,770,635 pts | RAM: 75.7 MB / 4096 MB</div>
+            <div class="island-text" id="island-main">Nexus V3 Production: WebSocket Online</div>
+            <div class="island-sub" id="island-sub">Score: 2,770,635 pts | RAM: 73.4 MB / 4096 MB</div>
         </div>
     </div>
 
@@ -237,18 +210,18 @@
     <div class="hardware-panel">
         <div class="hw-title">
             <span>⚙️ Апаратна телеметрія VPS (gangkor-lab-btrfs)</span>
-            <span id="hw-pid-status" style="color: #34d399;">● 10,000 кіл марафону завершено (100%)</span>
+            <span id="ws-status" style="color: #34d399;">● WS: Підключено</span>
         </div>
         <div class="hw-grid">
             <div class="hw-card">
                 <div class="hw-label">VPS RAM (Зайнято / Всього)</div>
-                <div class="hw-value" id="hw-ram-val">75.7 MB / 4096 MB</div>
+                <div class="hw-value" id="hw-ram-val">73.4 MB / 4096 MB</div>
                 <div class="progress-bar-bg"><div class="progress-bar-fill" id="hw-ram-bar" style="width: 1.8%;"></div></div>
             </div>
             <div class="hw-card">
                 <div class="hw-label">CPU Load Average (1m, 5m, 15m)</div>
-                <div class="hw-value" id="hw-cpu-val">0.14, 0.17, 0.22</div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill" id="hw-cpu-bar" style="width: 12%;"></div></div>
+                <div class="hw-value" id="hw-cpu-val">0.23, 0.32, 0.27</div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="hw-cpu-bar" style="width: 15%;"></div></div>
             </div>
             <div class="hw-card">
                 <div class="hw-label">NVMe / Btrfs Диск (24 ГБ)</div>
@@ -258,9 +231,20 @@
         </div>
     </div>
 
+    <!-- 10 SWARM FEATURES PANEL -->
+    <div class="features-panel">
+        <div class="hw-title" style="margin-bottom: 4px;">
+            <span>💡 10 Інженерних Фіч, Спроєктованих Роєм Агентів</span>
+            <span style="color: #38bdf8; font-size: 0.7rem;">localStorage + Web Audio</span>
+        </div>
+        <div class="features-grid" id="features-grid">
+            <!-- Dynamic Features -->
+        </div>
+    </div>
+
     <header>
         <div>
-            <h1 id="header-title">🏢 Офіс Агентів: Самодослідження (10,000 кіл)</h1>
+            <h1 id="header-title">🏢 Офіс Агентів: V3 Production</h1>
             <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 2px;" id="header-node">Вузол: gangkor-lab-btrfs (188.213.161.186)</div>
         </div>
         <div class="metrics-bar">
@@ -274,14 +258,17 @@
     <div id="approval-container"></div>
 
     <div class="canvas-container">
-        <div class="room-title">Віртуальний офіс (HTML5 Canvas 16-Bit Pixel Studio) — клікніть на агента</div>
+        <div class="room-title">Віртуальний офіс (HTML5 Canvas 16-Bit Pixel Studio + Matrix FX)</div>
         <canvas id="office-canvas" width="800" height="360"></canvas>
         <div class="desks-grid" id="desks-grid"></div>
     </div>
 
     <div class="console-box">
-        <div class="console-title">📡 Поточний потік логів (Marathon Evolution & Telemetry)</div>
-        <div class="console-pre" id="console-log">Завантаження логів...</div>
+        <div class="console-title">
+            <span>📡 Поточний потік логів (Real-Time WebSocket Stream)</span>
+            <span style="cursor: pointer; color: #38bdf8;" onclick="exportJSONState()">[💾 Експорт JSON]</span>
+        </div>
+        <div class="console-pre" id="console-log">Підключення до WebSocket...</div>
     </div>
 
     <!-- Modal -->
@@ -296,6 +283,55 @@
     </div>
 
     <script>
+        // --- FEATURE 1: WEB AUDIO 8-BIT SYNTHESIZER ---
+        let audioCtx = null;
+        function playRetroSound(type) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'square';
+                
+                const now = audioCtx.currentTime;
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'success') {
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                }
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+            } catch (e) {
+                // Audio context not allowed until user interaction
+            }
+        }
+
+        // --- FEATURE 2: PERSISTENT LOCALSTORAGE STATE ---
+        function saveLocalState(key, val) {
+            try { localStorage.setItem('nexus_' + key, JSON.stringify(val)); } catch(e) {}
+        }
+        function getLocalState(key, fallback) {
+            try {
+                const item = localStorage.getItem('nexus_' + key);
+                return item ? JSON.parse(item) : fallback;
+            } catch(e) { return fallback; }
+        }
+
         let currentData = null;
         let tick = 0;
         const canvas = document.getElementById('office-canvas');
@@ -390,6 +426,7 @@
         }
 
         canvas.addEventListener('click', function(e) {
+            playRetroSound('click');
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
@@ -407,12 +444,43 @@
 
         function fallbackAgents() {
             return [
-                { id: 'harness_router', name: 'harness-router', role: 'Диспетчер', state: 'analyzing', state_label: '🟢 Океанує роєм', current_task: 'Марафон 100/100 завершено успішно', active_file: 'runner.py', metrics: {ram: '14.2 MB', tasks_done: 51059, sla: '0.18s', uptime: '257h'}, recent_log: 'Marathon round 100/100 passed.' },
-                { id: 'claude_code', name: 'claude-code', role: 'Архітектор', state: 'coding', state_label: '🟢 Проєктує', current_task: 'Дизайн фіч для мобільного PWA', active_file: 'recipes.json', metrics: {ram: '28.6 MB', tasks_done: 113, sla: '0.22s', uptime: '257h'}, recent_log: 'Architecture verified.' },
-                { id: 'aider', name: 'aider', role: 'Кодер', state: 'coding', state_label: '🟢 Кодить', current_task: 'Генерація diff-патчів', active_file: 'parser.py', metrics: {ram: '22.4 MB', tasks_done: 12950, sla: '0.20s', uptime: '257h'}, recent_log: 'Patch OK.' },
-                { id: 'oh_my_pi', name: 'oh-my-pi', role: 'Хірург', state: 'action_required', state_label: '⚠️ Дозвіл', current_task: 'Симуляція Solana CloseAccount', active_file: 'sweeper.py', metrics: {ram: '18.1 MB', tasks_done: 9940, sla: '0.19s', uptime: '257h'}, recent_log: 'Accounts verified.' },
-                { id: 'gitleaks', name: 'gitleaks', role: 'Безпека', state: 'patrolling', state_label: '🛡️ Сканує', current_task: 'Аудит git diff на токени', active_file: 'repo', metrics: {ram: '9.8 MB', tasks_done: 51059, sla: '0.04s', uptime: '257h'}, recent_log: '0 leaks.' }
+                { id: 'harness_router', name: 'harness-router', role: 'Диспетчер', state: 'analyzing', state_label: '🟢 WS Stream', current_task: 'WebSocket Bridge Online', active_file: 'server.py', metrics: {ram: '14.2 MB', tasks_done: 51059, sla: '0.18s', uptime: '257h'}, recent_log: 'WS connected.' },
+                { id: 'claude_code', name: 'claude-code', role: 'Архітектор', state: 'coding', state_label: '🟢 Проєктує', current_task: 'Web Audio & IndexedDB', active_file: 'recipes.json', metrics: {ram: '28.6 MB', tasks_done: 113, sla: '0.22s', uptime: '257h'}, recent_log: 'Specs OK.' },
+                { id: 'aider', name: 'aider', role: 'Кодер', state: 'coding', state_label: '🟢 Кодить', current_task: 'Matrix FX & State', active_file: 'office.html', metrics: {ram: '22.4 MB', tasks_done: 12950, sla: '0.20s', uptime: '257h'}, recent_log: 'Patch OK.' },
+                { id: 'oh_my_pi', name: 'oh-my-pi', role: 'Хірург', state: 'action_required', state_label: '⚠️ Дозвіл', current_task: 'Solana CloseAccount', active_file: 'sweeper.py', metrics: {ram: '18.1 MB', tasks_done: 9940, sla: '0.19s', uptime: '257h'}, recent_log: 'Ready.' },
+                { id: 'gitleaks', name: 'gitleaks', role: 'Безпека', state: 'patrolling', state_label: '🛡️ Сканує', current_task: 'Log credential mask', active_file: 'repo', metrics: {ram: '9.8 MB', tasks_done: 51059, sla: '0.04s', uptime: '257h'}, recent_log: '0 leaks.' }
             ];
+        }
+
+        // --- FEATURE 3: WEBSOCKET / REST CLIENT ---
+        function setupWebSocket() {
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            const wsHost = window.location.hostname || '188.213.161.186';
+            const wsUrl = wsProtocol + wsHost + ':18091';
+
+            try {
+                const ws = new WebSocket(wsUrl);
+                ws.onopen = () => {
+                    document.getElementById('ws-status').innerText = '● WS: Live Sync';
+                };
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        currentData = data;
+                        renderDOM(data);
+                    } catch(e) {}
+                };
+                ws.onerror = () => {
+                    document.getElementById('ws-status').innerText = '● WS: Fallback REST';
+                    fetchState();
+                };
+                ws.onclose = () => {
+                    document.getElementById('ws-status').innerText = '● WS: Реконнект...';
+                    setTimeout(setupWebSocket, 4000);
+                };
+            } catch(e) {
+                fetchState();
+            }
         }
 
         function fetchState() {
@@ -422,9 +490,7 @@
                     currentData = data;
                     renderDOM(data);
                 })
-                .catch(err => {
-                    console.log('Using local fallback telemetry');
-                });
+                .catch(err => console.log('REST fetch error:', err));
         }
 
         function renderDOM(data) {
@@ -435,7 +501,6 @@
             document.getElementById('lbl-score').innerText = data.total_score.toLocaleString();
             document.getElementById('lbl-uptime').innerText = data.uptime;
 
-            // Hardware telemetry update
             if (data.hardware) {
                 const hw = data.hardware;
                 document.getElementById('hw-ram-val').innerText = `${hw.ram_used_mb} MB / ${hw.ram_total_mb} MB (${hw.ram_percent}%)`;
@@ -448,9 +513,18 @@
                 document.getElementById('hw-disk-bar').style.width = hw.disk_percent + '%';
             }
 
-            if (data.marathon) {
-                document.getElementById('island-main').innerText = `Marathon ${data.marathon.current_round}/100: ${data.marathon.status}`;
-                document.getElementById('island-sub').innerText = `⚡ ${data.marathon.current_feature}`;
+            if (data.features) {
+                const fGrid = document.getElementById('features-grid');
+                let fHtml = '';
+                data.features.forEach(feat => {
+                    fHtml += `
+                        <div class="feature-item">
+                            <div class="feature-title">⚡ ${feat.title}</div>
+                            <div class="feature-desc">${feat.desc}</div>
+                        </div>
+                    `;
+                });
+                fGrid.innerHTML = fHtml;
             }
 
             // Approvals
@@ -465,8 +539,8 @@
                                 <p><b>${appr.title}</b> — ${appr.desc}</p>
                             </div>
                             <div class="approval-actions">
-                                <button class="btn btn-approve" onclick="sendApproval('${appr.id}', 'approve')">Дозволити</button>
-                                <button class="btn btn-reject" onclick="sendApproval('${appr.id}', 'reject')">Відхилити</button>
+                                <button class="btn btn-approve" onclick="playRetroSound('success'); sendApproval('${appr.id}', 'approve')">Дозволити</button>
+                                <button class="btn btn-reject" onclick="playRetroSound('click'); sendApproval('${appr.id}', 'reject')">Відхилити</button>
                             </div>
                         </div>
                     `;
@@ -479,7 +553,7 @@
             let gridHtml = '';
             (data.agents || []).forEach(agent => {
                 gridHtml += `
-                    <div class="desk-card" onclick="openModal('${agent.id}')">
+                    <div class="desk-card" onclick="playRetroSound('click'); openModal('${agent.id}')">
                         <div class="desk-header">
                             <span class="agent-name">${agent.name}</span>
                             <span class="agent-status-badge">${agent.state_label}</span>
@@ -539,9 +613,24 @@
             document.getElementById('modal-backdrop').style.display = 'none';
         }
 
+        function exportJSONState() {
+            playRetroSound('success');
+            if (!currentData) {
+                alert('Дані телеметрії ще завантажуються...');
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "nexus_pixel_office_v3_telemetry.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
         requestAnimationFrame(drawOffice);
-        setInterval(fetchState, 3000);
-        fetchState();
+        setupWebSocket();
+        setInterval(fetchState, 5000);
     </script>
 </body>
 </html>
