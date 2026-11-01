@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Віртуальний Офіс Агентів — Pixel Dashboard</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace, sans-serif;
+            padding: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            background: #111827;
+            border: 2px solid #374151;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            font-size: 1.1rem;
+            color: #34d399;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .metrics-bar {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+        .metrics-bar span { color: #f3f4f6; font-weight: bold; }
+        
+        /* Approvals banner */
+        #approval-container {
+            margin-bottom: 12px;
+        }
+        .approval-card {
+            background: #1f2937;
+            border: 2px dashed #f59e0b;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: pulse-border 2s infinite;
+        }
+        @keyframes pulse-border {
+            0% { border-color: #f59e0b; }
+            50% { border-color: #d97706; }
+            100% { border-color: #f59e0b; }
+        }
+        .approval-info h3 { color: #fbbf24; font-size: 0.95rem; margin-bottom: 4px; }
+        .approval-info p { color: #9ca3af; font-size: 0.8rem; }
+        .approval-actions { display: flex; gap: 8px; }
+        .btn {
+            background: #374151;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-approve { background: #059669; }
+        .btn-approve:hover { background: #047857; }
+        .btn-reject { background: #dc2626; }
+        .btn-reject:hover { background: #b91c1c; }
+
+        /* Canvas / Office Room */
+        .canvas-container {
+            background: #0f172a;
+            border: 3px solid #334155;
+            border-radius: 8px;
+            padding: 8px;
+            position: relative;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .room-title {
+            align-self: flex-start;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+        #office-canvas {
+            background: #0f172a;
+            border: 2px solid #1e293b;
+            border-radius: 6px;
+            image-rendering: pixelated;
+            max-width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+
+        /* Desks grid below canvas */
+        .desks-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .desk-card {
+            background: #1e293b;
+            border: 2px solid #475569;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .desk-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+        }
+        .desk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .agent-name {
+            font-size: 0.85rem;
+            color: #38bdf8;
+            font-weight: bold;
+        }
+        .agent-status-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #0f172a;
+            border: 1px solid #334155;
+        }
+        .agent-role {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+        .agent-task {
+            font-size: 0.72rem;
+            background: #0f172a;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px dashed #334155;
+            color: #cbd5e1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Modal window */
+        #modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            padding: 18px;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .modal-close:hover { color: #fff; }
+        .modal-title { font-size: 1rem; color: #38bdf8; margin-bottom: 6px; font-weight: bold; }
+        .modal-body { font-size: 0.8rem; color: #cbd5e1; line-height: 1.4; }
+        .modal-metrics {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: #0f172a;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .modal-log {
+            margin-top: 10px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            color: #34d399;
+            max-height: 120px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        /* Console log */
+        .console-box {
+            background: #111827;
+            border: 2px solid #374151;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .console-title {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .console-pre {
+            background: #030712;
+            border: 1px solid #1f2937;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #34d399;
+            height: 110px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 id="header-title">🏢 Офіс Агентів: завантаження...</h1>
+            <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 2px;" id="header-node">Вузол: зв'язок з сервером...</div>
+        </div>
+        <div class="metrics-bar">
+            <div>Працюють: <span id="lbl-active">0</span></div>
+            <div>Очікують: <span id="lbl-idle">0</span></div>
+            <div>Score: <span id="lbl-score">0</span></div>
+            <div>Uptime: <span id="lbl-uptime">0</span></div>
+        </div>
+    </header>
+
+    <div id="approval-container"></div>
+
+    <div class="canvas-container">
+        <div class="room-title">Віртуальний простір (HTML5 Canvas 8-Bit Pixel Art) — клікніть на стіл або агента</div>
+        <canvas id="office-canvas" width="800" height="340"></canvas>
+        <div class="desks-grid" id="desks-grid">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <div class="console-box">
+        <div class="console-title">📡 Поточний потік логів (Telemetry Stream)</div>
+        <div class="console-pre" id="console-log">Підключення до телеметрії...</div>
+    </div>
+
+    <!-- Modal Dialog -->
+    <div id="modal-backdrop" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="closeModalForce()">×</div>
+            <div class="modal-title" id="modal-agent-name">Агент</div>
+            <div class="modal-body" id="modal-agent-role">Роль</div>
+            <div class="modal-metrics" id="modal-agent-metrics"></div>
+            <div class="modal-log" id="modal-agent-log">Лог...</div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = null;
+        let tick = 0;
+        const canvas = document.getElementById('office-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Positions of desks in the 800x340 canvas room
+        const deskPositions = {
+            'harness_router': { x: 340, y: 80, width: 120, height: 90, color: '#f59e0b' },
+            'claude_code':    { x: 80,  y: 60, width: 110, height: 85, color: '#a855f7' },
+            'aider':          { x: 80,  y: 190, width: 110, height: 85, color: '#3b82f6' },
+            'oh_my_pi':       { x: 600, y: 60, width: 110, height: 85, color: '#ec4899' },
+            'gitleaks':       { x: 600, y: 190, width: 110, height: 85, color: '#10b981' }
+        };
+
+        function drawOffice() {
+            tick++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw floor tiles (pixelated checkerboard)
+            const tileSize = 32;
+            for (let x = 0; x < canvas.width; x += tileSize) {
+                for (let y = 0; y < canvas.height; y += tileSize) {
+                    ctx.fillStyle = ((x / tileSize + y / tileSize) % 2 === 0) ? '#0f172a' : '#141e33';
+                    ctx.fillRect(x, y, tileSize, tileSize);
+                }
+            }
+
+            // 2. Draw Server Rack (upper wall)
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(350, 10, 100, 40);
+            ctx.fillStyle = '#334155';
+            ctx.strokeRect(350, 10, 100, 40);
+            // Server blinkers
+            for (let i = 0; i < 4; i++) {
+                ctx.fillStyle = (Math.sin(tick * 0.1 + i) > 0) ? '#34d399' : '#059669';
+                ctx.fillRect(360 + i * 22, 22, 12, 6);
+            }
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px monospace';
+            ctx.fillText('SERVER RACK', 365, 42);
+
+            // 3. Draw Water Cooler (corner)
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillRect(20, 20, 24, 30);
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(18, 50, 28, 20);
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('COOLER', 12, 82);
+
+            // 4. Draw Desks and Agents
+            if (currentData && currentData.agents) {
+                currentData.agents.forEach(agent => {
+                    const pos = deskPositions[agent.id];
+                    if (!pos) return;
+
+                    // Desk surface
+                    ctx.fillStyle = '#334155';
+                    ctx.fillRect(pos.x, pos.y + 30, pos.width, 45);
+                    ctx.fillStyle = '#475569';
+                    ctx.strokeRect(pos.x, pos.y + 30, pos.width, 45);
+
+                    // Computer Monitor
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fillRect(pos.x + 35, pos.y + 15, 40, 28);
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.strokeRect(pos.x + 35, pos.y + 15, 40, 28);
+
+                    // Screen glow
+                    if (agent.state === 'coding' || agent.state === 'analyzing') {
+                        ctx.fillStyle = (Math.floor(tick / 10) % 2 === 0) ? '#0284c7' : '#38bdf8';
+                        ctx.fillRect(pos.x + 38, pos.y + 18, 34, 22);
+                    } else {
+                        ctx.fillStyle = '#1e293b';
+                        ctx.fillRect(pos.x + 38, pos.y + 18, 34, 22);
+                    }
+
+                    // Character behind desk
+                    const bobbing = Math.sin(tick * 0.15) * 2;
+                    ctx.fillStyle = pos.color;
+                    // Head
+                    ctx.fillRect(pos.x + 45, pos.y - 12 + bobbing, 20, 18);
+                    // Eyes
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(pos.x + 48, pos.y - 8 + bobbing, 4, 4);
+                    ctx.fillRect(pos.x + 58, pos.y - 8 + bobbing, 4, 4);
+                    // Body
+                    ctx.fillStyle = pos.color;
+                    ctx.fillRect(pos.x + 40, pos.y + 6 + bobbing, 30, 20);
+
+                    // Status bubble above head
+                    const bubbleY = pos.y - 28 + bobbing;
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillRect(pos.x + 10, bubbleY, pos.width - 20, 18);
+                    ctx.fillStyle = '#64748b';
+                    ctx.strokeRect(pos.x + 10, bubbleY, pos.width - 20, 18);
+
+                    ctx.fillStyle = (agent.state === 'action_required') ? '#f59e0b' : '#e2e8f0';
+                    ctx.font = '10px monospace';
+                    let bubbleText = agent.state_label;
+                    if (agent.state === 'action_required') {
+                        bubbleText = '[!] ДОЗВІЛ';
+                    }
+                    ctx.fillText(bubbleText, pos.x + 15, bubbleY + 12);
+
+                    // Agent Name label
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.font = '11px monospace';
+                    ctx.fillText(agent.name, pos.x + 15, pos.y + 90);
+                });
+            }
+
+            requestAnimationFrame(drawOffice);
+        }
+
+        // Canvas Click handler
+        canvas.addEventListener('click', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clickX = (e.clientX - rect.left) * scaleX;
+            const clickY = (e.clientY - rect.top) * scaleY;
+
+            for (const [id, pos] of Object.entries(deskPositions)) {
+                if (clickX >= pos.x && clickX <= pos.x + pos.width &&
+                    clickY >= pos.y - 30 && clickY <= pos.y + pos.height + 20) {
+                    openModal(id);
+                    break;
+                }
+            }
+        });
+
+        function fetchState() {
+            fetch('/api/office/state')
+                .then(res => res.json())
+                .then(data => {
+                    currentData = data;
+                    renderDOM(data);
+                })
+                .catch(err => {
+                    console.error('Fetch error:', err);
+                    document.getElementById('header-title').innerText = '🏢 Офіс Агентів [ПОМИЛКА ЗВʼЯЗКУ]';
+                });
+        }
+
+        function renderDOM(data) {
+            document.getElementById('header-title').innerText = '🏢 ' + data.office_title;
+            document.getElementById('header-node').innerText = 'Вузол: ' + data.node;
+            document.getElementById('lbl-active').innerText = data.active_count;
+            document.getElementById('lbl-idle').innerText = data.idle_count;
+            document.getElementById('lbl-score').innerText = data.total_score.toLocaleString();
+            document.getElementById('lbl-uptime').innerText = data.uptime;
+
+            // Render approvals
+            const apprContainer = document.getElementById('approval-container');
+            let apprHtml = '';
+            (data.approvals || []).forEach(appr => {
+                if (appr.status === 'pending') {
+                    apprHtml += '<div class="approval-card">' +
+                        '<div class="approval-info">' +
+                        '<h3>[!] ЗАПИТ ДОЗВОЛУ ВІД АГЕНТА: ' + appr.agent + '</h3>' +
+                        '<p><b>' + appr.title + '</b> — ' + appr.desc + '</p>' +
+                        '</div>' +
+                        '<div class="approval-actions">' +
+                        '<button class="btn btn-approve" onclick="sendApproval(\'' + appr.id + '\', \'approve\')">Дозволити</button>' +
+                        '<button class="btn btn-reject" onclick="sendApproval(\'' + appr.id + '\', \'reject\')">Відхилити</button>' +
+                        '</div></div>';
+                }
+            });
+            apprContainer.innerHTML = apprHtml;
+
+            // Render desks grid below
+            const grid = document.getElementById('desks-grid');
+            let gridHtml = '';
+            (data.agents || []).forEach(agent => {
+                gridHtml += '<div class="desk-card" onclick="openModal(\'' + agent.id + '\')">' +
+                    '<div class="desk-header">' +
+                    '<span class="agent-name">' + agent.name + '</span>' +
+                    '<span class="agent-status-badge">' + agent.state_label + '</span>' +
+                    '</div>' +
+                    '<div class="agent-role">' + agent.role + '</div>' +
+                    '<div class="agent-task" title="' + agent.current_task + '">⚡ ' + agent.current_task + '</div>' +
+                    '</div>';
+            });
+            grid.innerHTML = gridHtml;
+
+            // Render console logs
+            const consolePre = document.getElementById('console-log');
+            if (data.recent_logs && data.recent_logs.length > 0) {
+                consolePre.innerText = data.recent_logs.join('\n');
+            } else {
+                consolePre.innerText = 'Система активна. Очікування нових подій у стрімі...';
+            }
+        }
+
+        function sendApproval(id, action) {
+            fetch('/api/office/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, action: action })
+            })
+            .then(res => res.json())
+            .then(res => {
+                fetchState();
+            })
+            .catch(err => alert('Помилка відправки запиту: ' + err));
+        }
+
+        function openModal(agentId) {
+            if (!currentData || !currentData.agents) return;
+            const agent = currentData.agents.find(a => a.id === agentId);
+            if (!agent) return;
+
+            document.getElementById('modal-agent-name').innerText = agent.name + ' (' + agent.role + ')';
+            document.getElementById('modal-agent-role').innerText = 'Поточний статус: ' + agent.state_label + ' | Файл: ' + agent.active_file;
+            
+            let metricsHtml = '<div>RAM: <b>' + agent.metrics.ram + '</b></div>' +
+                '<div>Завдань: <b>' + agent.metrics.tasks_done + '</b></div>' +
+                '<div>SLA: <b>' + agent.metrics.sla + '</b></div>' +
+                '<div>Uptime: <b>' + agent.metrics.uptime + '</b></div>';
+            document.getElementById('modal-agent-metrics').innerHTML = metricsHtml;
+            document.getElementById('modal-agent-log').innerText = 'Останній лог агента:\n' + agent.recent_log;
+
+            document.getElementById('modal-backdrop').style.display = 'flex';
+        }
+
+        function closeModal(event) {
+            document.getElementById('modal-backdrop').style.display = 'none';
+        }
+
+        function closeModalForce() {
+            document.getElementById('modal-backdrop').style.display = 'none';
+        }
+
+        // Initialize animation & polling
+        requestAnimationFrame(drawOffice);
+        setInterval(fetchState, 3000);
+        fetchState();
+    </script>
+</body>
+</html>
