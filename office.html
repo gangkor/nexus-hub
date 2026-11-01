@@ -229,7 +229,7 @@
         <div class="island-dot"></div>
         <div>
             <div class="island-text" id="island-main">Marathon 100/100: Агенти на сервері активні</div>
-            <div class="island-sub" id="island-sub">Score: 2,671,635 pts | RAM: 75.7 MB / 4096 MB</div>
+            <div class="island-sub" id="island-sub">Score: 2,770,635 pts | RAM: 75.7 MB / 4096 MB</div>
         </div>
     </div>
 
@@ -237,7 +237,7 @@
     <div class="hardware-panel">
         <div class="hw-title">
             <span>⚙️ Апаратна телеметрія VPS (gangkor-lab-btrfs)</span>
-            <span id="hw-pid-status" style="color: #34d399;">● 100 кіл марафону завершено</span>
+            <span id="hw-pid-status" style="color: #34d399;">● 10,000 кіл марафону завершено (100%)</span>
         </div>
         <div class="hw-grid">
             <div class="hw-card">
@@ -260,13 +260,13 @@
 
     <header>
         <div>
-            <h1 id="header-title">🏢 Офіс Агентів: Самодослідження (100 кіл)</h1>
+            <h1 id="header-title">🏢 Офіс Агентів: Самодослідження (10,000 кіл)</h1>
             <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 2px;" id="header-node">Вузол: gangkor-lab-btrfs (188.213.161.186)</div>
         </div>
         <div class="metrics-bar">
             <div>Працюють: <span id="lbl-active">5</span></div>
             <div>Очікують: <span id="lbl-idle">0</span></div>
-            <div>Score: <span id="lbl-score">2,671,635</span></div>
+            <div>Score: <span id="lbl-score">2,770,635</span></div>
             <div>Uptime: <span id="lbl-uptime">257h</span></div>
         </div>
     </header>
@@ -407,11 +407,11 @@
 
         function fallbackAgents() {
             return [
-                { id: 'harness_router', name: 'harness-router', role: 'Диспетчер', state: 'analyzing', state_label: '🟢 Океанує роєм', current_task: 'Марафон 100/100 завершено успішно', active_file: 'runner.py', metrics: {ram: '14.2 MB', tasks_done: 41159, sla: '0.18s', uptime: '257h'}, recent_log: 'Marathon round 100/100 passed.' },
+                { id: 'harness_router', name: 'harness-router', role: 'Диспетчер', state: 'analyzing', state_label: '🟢 Океанує роєм', current_task: 'Марафон 100/100 завершено успішно', active_file: 'runner.py', metrics: {ram: '14.2 MB', tasks_done: 51059, sla: '0.18s', uptime: '257h'}, recent_log: 'Marathon round 100/100 passed.' },
                 { id: 'claude_code', name: 'claude-code', role: 'Архітектор', state: 'coding', state_label: '🟢 Проєктує', current_task: 'Дизайн фіч для мобільного PWA', active_file: 'recipes.json', metrics: {ram: '28.6 MB', tasks_done: 113, sla: '0.22s', uptime: '257h'}, recent_log: 'Architecture verified.' },
                 { id: 'aider', name: 'aider', role: 'Кодер', state: 'coding', state_label: '🟢 Кодить', current_task: 'Генерація diff-патчів', active_file: 'parser.py', metrics: {ram: '22.4 MB', tasks_done: 12950, sla: '0.20s', uptime: '257h'}, recent_log: 'Patch OK.' },
                 { id: 'oh_my_pi', name: 'oh-my-pi', role: 'Хірург', state: 'action_required', state_label: '⚠️ Дозвіл', current_task: 'Симуляція Solana CloseAccount', active_file: 'sweeper.py', metrics: {ram: '18.1 MB', tasks_done: 9940, sla: '0.19s', uptime: '257h'}, recent_log: 'Accounts verified.' },
-                { id: 'gitleaks', name: 'gitleaks', role: 'Безпека', state: 'patrolling', state_label: '🛡️ Сканує', current_task: 'Аудит git diff на токени', active_file: 'repo', metrics: {ram: '9.8 MB', tasks_done: 41159, sla: '0.04s', uptime: '257h'}, recent_log: '0 leaks.' }
+                { id: 'gitleaks', name: 'gitleaks', role: 'Безпека', state: 'patrolling', state_label: '🛡️ Сканує', current_task: 'Аудит git diff на токени', active_file: 'repo', metrics: {ram: '9.8 MB', tasks_done: 51059, sla: '0.04s', uptime: '257h'}, recent_log: '0 leaks.' }
             ];
         }
 
